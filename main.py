@@ -24,7 +24,7 @@ def check_place(azs_info,following):
     if min_status[1] != 999:
         azs_info[min_status[0]][2] += 1
         return(azs_info,min_status[0])
-    return 0
+    return (azs_info,0)
 
 def monitoring(azs_info, info, event):
     if event == 'departure':
