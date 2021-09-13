@@ -1,4 +1,4 @@
-import sys
+import sys, random
 sys.stdin = open("azs.txt")
 azs_info = dict()
 azs_status = dict()
@@ -13,11 +13,11 @@ while True:
     except (ValueError, EOFError):
         break
 
-        
+
 def check_place(azs_info,following):
 #функция выдает номер заправки, рассмотреть все случаи и закинуть в словарь
 #min_status = [номер колонки,минимальное количество машин в очереди]
-    benz = following[-1]
+    benz = following[-2]
     min_status = [0,999]
     for key in azs_info:
         if benz in azs_info[key][1]:
@@ -34,6 +34,8 @@ def new(following, azs_status, petrol):
     following.append(int(converter(following[0])+int(following[3])))
     azs_status[str(petrol)].append(following)
     return azs_status
+
+
 
 def monitoring(azs_info, info, event):
     if event == 'departure':
@@ -58,7 +60,12 @@ def modelling(following, azs_info, azs_status, status, time):
     if time == 1440:
         return status
     if not following:
-        pass                            # первая строка файла
+        following = list(input().split())
+        speed = random.randint(9, 11)
+        if following[1] % speed == 0:
+            following.append(following[1]//speed)    
+        else:
+            following.append((following[1]//speed)+1)                     # первая строка файла
     for n in range(len(azs_status)):
         if azs_status[n] != []:
             departure_time = converter(azs_status[n][0][4])
@@ -75,3 +82,6 @@ def modelling(following, azs_info, azs_status, status, time):
         azs_info = new(following, azs_status, petrol)
         following = None
     return modelling(following, azs_info, azs_status, status, time+1)
+
+sys.stdin = open('input.txt')
+modelling(None, azs_info, azs_status, status, 1)
