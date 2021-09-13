@@ -12,10 +12,11 @@ while True:
             break
     except (ValueError, EOFError):
         break
+
+        
 def check_place(azs_info,following):
 #функция выдает номер заправки, рассмотреть все случаи и закинуть в словарь
 #min_status = [номер колонки,минимальное количество машин в очереди]
-    benz = following[-1]
     min_status = [0,999]
     for key in azs_info:
         if benz in azs_info[key][1]:
@@ -24,12 +25,20 @@ def check_place(azs_info,following):
                 min_status[1] = azs_info[key][2]
     if min_status[1] != 999:
         azs_info[min_status[0]][2] += 1
-        return(azs_info,min_status[0])
-    return (azs_info,0)
+        return(azs_info,str(min_status[0]))
+    return (azs_info, '-1')
+
+
+def new(following, azs_status, petrol):
+    following.append(int(converter(following[0])+int(following[3])))
+    azs_status[str(petrol)].append(following)
+    return azs_status
 
 def monitoring(azs_info, info, event):
     if event == 'departure':
         print('В', info[4], 'клиент', info[0], info[1], info[2], info[3], 'заправил свой автомобиль и покинул очередь.')
+    elif event == 'waste':
+        print('что-то') # дописать
     else:
         print('В', info[0], 'новый клиент:', info[0], info[1], info[2], info[3], 'встал в очередь к автомату №', event)
     for n in range(len(azs_info)):
@@ -47,19 +56,21 @@ def modelling(following, azs_info, azs_status, status, time):
     petrol = None
     if time == 1440:
         return status
-    if following == '':
+    if not following:
         pass                            # первая строка файла
     for n in range(len(azs_status)):
         if azs_status[n] != []:
             departure_time = converter(azs_status[n][0][4])
             if departure_time == str(time):
                 monitoring(azs_info, azs_status[n][0], 'departure')
-
-       
-    
-    
-
-    
-    
-    if time == converter(following[:5]):
-        petrol = check_place(following, azs_info)
+                azs_status[n].pop()
+    if str(time) == converter(following[0]):
+        azs_info, petrol = check_place(following, azs_info)
+    if petrol == '-1':
+        monitoring(azs_info, following, 'waste')
+        following = None
+    else:
+        monitoring(azs_info, following, petrol)
+        azs_info = new(following, azs_status, petrol)
+        following = None
+    return modelling(following, azs_info, azs_status, status, time+1)
