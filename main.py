@@ -12,6 +12,19 @@ while True:
             break
     except (ValueError, EOFError):
         break
+def check_place(azs_info,following):
+#функция выдает номер заправки, рассмотреть все случаи и закинуть в словарь
+#min_status = [номер колонки,минимальное количество машин в очереди]
+    min_status = [0,999]
+    for key in azs_info:
+        if benz in azs_info[key][1]:
+            if min_status[1] > azs_info[key][2] and azs_info[key][0] != azs_info[key][2]:
+                min_status[0] = key
+                min_status[1] = azs_info[key][2]
+    if min_status[1] != 999:
+        azs_info[min_status[0]][2] += 1
+        return(azs_info,min_status[0])
+    return 0
 
 def monitoring(azs_info, info, event):
     if event == 'departure':
@@ -41,6 +54,7 @@ def modelling(following, azs_info, azs_status, status, time):
             if departure_time == str(time):
                 monitoring(azs_info, azs_status[n][0], 'departure')
 
+       
     
     
 
