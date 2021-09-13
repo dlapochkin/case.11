@@ -1,3 +1,18 @@
+import sys
+sys.stdin = open("azs.txt")
+azs_info = dict()
+azs_status = dict()
+status = dict()
+while True:
+    try:
+        line = list(input().split())
+        azs_info[line[0]] = [line[1], line[2:], 0]
+        azs_status[line[0]] = []
+        if line == '':
+            break
+    except (ValueError, EOFError):
+        break
+
 def monitoring(azs_info, info, event):
     if event == 'departure':
         print('В', info[4], 'клиент', info[0], info[1], info[2], info[3], 'заправил свой автомобиль и покинул очередь.')
@@ -5,13 +20,8 @@ def monitoring(azs_info, info, event):
         print('В', info[0], 'новый клиент:', info[0], info[1], info[2], info[3], 'встал в очередь к автомату №', event)
     for n in range(len(azs_info)):
         print('Автомат №{0} максимальная очередь: {1} Марки бензина:'.format(n, azs_info[n][0]), ','.join(azs_info[n][1]))
-
-
-
-def check_place(following, azs_info):
-    return 1
-
-
+        
+        
 def converter(time):
     if time.count(':'):
         return str(int(time[:2]) * 60 + int(time[3:]))
@@ -38,6 +48,3 @@ def modelling(following, azs_info, azs_status, status, time):
     
     if time == converter(following[:5]):
         petrol = check_place(following, azs_info)
-    
-    
-    
