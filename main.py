@@ -15,6 +15,7 @@ while True:
 def check_place(azs_info,following):
 #функция выдает номер заправки, рассмотреть все случаи и закинуть в словарь
 #min_status = [номер колонки,минимальное количество машин в очереди]
+    benz = following[-1]
     min_status = [0,999]
     for key in azs_info:
         if benz in azs_info[key][1]:
