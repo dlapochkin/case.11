@@ -42,7 +42,7 @@ def monitoring(azs_info, info, event):
     if event == 'departure':
         print('В', converter(info[4]), 'клиент', info[0], info[1], info[2], info[3], 'заправил свой автомобиль и покинул очередь.')
     elif event == 'waste':
-        print('что-то')  # дописать
+        print('В', info[0], 'новый клиент:', info[0], info[1], info[2], info[3], 'не смог заправить свой автомобиль и покинул АЗС')
     else:
         print('В', info[0], 'новый клиент:', info[0], info[1], info[2], info[3], 'встал в очередь к автомату №', event)
     for n in range(1,len(azs_info)+1):
