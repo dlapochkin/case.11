@@ -1,19 +1,7 @@
 import sys, random
 sys.setrecursionlimit(1500)
 
-sys.stdin = open("azs.txt")
-azs_info = dict()
-azs_status = dict()
-status = dict()
-while True:
-    try:
-        line = list(input().split())
-        azs_info[line[0]] = [line[1], line[2:], 0]
-        azs_status[line[0]] = []
-        if line == '':
-            break
-    except (ValueError, EOFError):
-        break
+
 
 
 def check_place(azs_info, following):
@@ -90,6 +78,21 @@ def modelling(following, azs_info, azs_status, status, time):
         following = None
         return modelling(following, azs_info, azs_status, status, time + 1)
 
+def main():
+    sys.stdin = open("azs.txt")
+    azs_info = dict()
+    azs_status = dict()
+    status = dict()
+    while True:
+        try:
+            line = list(input().split())
+            azs_info[line[0]] = [line[1], line[2:], 0]
+            azs_status[line[0]] = []
+            if line == '':
+                break
+        except (ValueError, EOFError):
+            break
+    sys.stdin = open('input.txt')
+    modelling(None, azs_info, azs_status, status, 1)
 
-sys.stdin = open('input.txt')
-modelling(None, azs_info, azs_status, status, 1)
+main()
