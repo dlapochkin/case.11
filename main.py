@@ -15,11 +15,11 @@ def main():
     Main function
     :return: None
     """
-    sys.setrecursionlimit(1500)
+    sys.setrecursionlimit(1445)
     sys.stdin = open("azs.txt")
     azs_info = dict()
     azs_status = dict()
-    status = dict()
+    statistic = {'литры': 0, 'доход': 0, 'покинувшие': 0}
     while True:
         try:
             line = list(input().split())
@@ -30,7 +30,9 @@ def main():
         except (ValueError, EOFError):
             break
     sys.stdin = open('input.txt')
-    modelling(None, azs_info, azs_status, status, 1)
+    statistic = modelling(None, azs_info, azs_status, statistic, 1)
+    print('\nЗа сутки было продано', statistic['литры'], 'литров бензина.\nВыручка составила', '{:.2f}'.format(statistic['доход']), 'рублей.\n'
+'Из-за скопившейся очереди АЗС покинули', statistic['покинувшие'], 'клиентов.')
 
 
 def monitoring(azs_info, client, event):
@@ -107,6 +109,7 @@ def modelling(client, azs_info, azs_status, statistic, time):
     :param time: number of the cycle
     :return: statistic
     """
+    prices = {'АИ-80': 31.50, 'АИ-92': 45.49, 'АИ-95': 50.01, 'АИ-98': 57.34}
     petrol = None
     if time == 1440:
         return statistic
@@ -129,10 +132,13 @@ def modelling(client, azs_info, azs_status, statistic, time):
     if not petrol:
         return modelling(client, azs_info, azs_status, statistic, time + 1)
     elif petrol == '-1':
+        statistic['покинувшие'] += 1
         monitoring(azs_info, client, 'waste')
         client = None
         return modelling(client, azs_info, azs_status, statistic, time + 1)
     else:
+        statistic['литры'] += int(client[1])
+        statistic['доход'] += int(client[1]) * prices[client[2]]
         monitoring(azs_info, client, petrol)
         azs_status = new(client, azs_status, petrol)
         client = None
