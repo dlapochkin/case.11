@@ -118,7 +118,7 @@ def modelling(client, azs_info, azs_status, statistic, time):
         return statistic
     if not client:
         client = list(input().split())
-        speed = random.randint(9, 10)
+        speed = random.randint(9, 11)
         if int(client[1]) % speed == 0:
             client.append(int(client[1]) // speed)
         else:
