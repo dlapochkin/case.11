@@ -9,13 +9,12 @@ Developers:
 import random
 import sys
 
-
 def main():
     """
     Main function
     :return: None
     """
-    sys.setrecursionlimit(1445)
+    sys.setrecursionlimit(1446)
     sys.stdin = open("azs.txt")
     azs_info = dict()
     azs_status = dict()
@@ -143,15 +142,13 @@ def modelling(client, azs_info, azs_status, statistic, time):
     elif petrol == '-1':
         statistic['покинувшие'] += 1
         monitoring(azs_info, client, 'waste')
-        client = None
-        return modelling(client, azs_info, azs_status, statistic, time + 1)
+        return modelling(None, azs_info, azs_status, statistic, time + 1)
     else:
         statistic['литры'] += int(client[1])
         statistic['доход'] += int(client[1]) * prices[client[2]]
         monitoring(azs_info, client, petrol)
         azs_status = new(client, azs_status, petrol)
-        client = None
-        return modelling(client, azs_info, azs_status, statistic, time + 1)
+        return modelling(None, azs_info, azs_status, statistic, time + 1)
 
 
 if __name__ == '__main__':
