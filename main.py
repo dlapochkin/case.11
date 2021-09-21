@@ -6,8 +6,8 @@ Developers:
 Лапочкин Д. А.:
 """
 
-
-import sys, random
+import random
+import sys
 
 
 def main():
@@ -31,8 +31,9 @@ def main():
             break
     sys.stdin = open('input.txt')
     statistic = modelling(None, azs_info, azs_status, statistic, 1)
-    print('\nЗа сутки было продано', statistic['литры'], 'литров бензина.\nВыручка составила', '{:.2f}'.format(statistic['доход']), 'рублей.\n'
-'Из-за скопившейся очереди АЗС покинули', statistic['покинувшие'], 'клиентов.')
+    print('\nЗа сутки было продано', statistic['литры'], 'литров бензина.\nВыручка составила',
+          '{:.2f}'.format(statistic['доход']), 'рублей.\n''Из-за скопившейся очереди АЗС покинули',
+          statistic['покинувшие'], 'клиентов.')
 
 
 def monitoring(azs_info, client, event):
@@ -44,14 +45,17 @@ def monitoring(azs_info, client, event):
     :return: None
     """
     if event == 'departure':
-        print('В', converter(client[4]), 'клиент', client[0], client[1], client[2], client[3], 'заправил свой автомобиль и покинул очередь.')
+        print('В', converter(client[4]), 'клиент', client[0], client[1], client[2], client[3],
+              'заправил свой автомобиль и покинул очередь.')
     elif event == 'waste':
-        print('В', client[0], 'новый клиент:', client[0], client[1], client[2], client[3], 'не смог заправить свой автомобиль и покинул АЗС')
+        print('В', client[0], 'новый клиент:', client[0], client[1], client[2], client[3],
+              'не смог заправить свой автомобиль и покинул АЗС')
     else:
-        print('В', client[0], 'новый клиент:', client[0], client[1], client[2], client[3], 'встал в очередь к автомату №' + str(event))
-    for n in range(1,len(azs_info)+1):
+        print('В', client[0], 'новый клиент:', client[0], client[1], client[2], client[3],
+              'встал в очередь к автомату №' + str(event))
+    for n in range(1, len(azs_info) + 1):
         print('Автомат №{0} максимальная очередь: {1} Марки бензина:'.format(n, azs_info[str(n)][0]),
-            ','.join(azs_info[str(n)][1]), '->', '*'*azs_info[str(n)][2])
+              ','.join(azs_info[str(n)][1]), '->', '*' * azs_info[str(n)][2])
 
 
 def converter(time):
@@ -82,13 +86,14 @@ def check_place(azs_info, client):
                 min_status[1] = azs_info[key][2]
     if min_status[1] != 999:
         azs_info[min_status[0]][2] += 1
-        return (azs_info, str(min_status[0]))
-    return (azs_info, '-1')
+        return azs_info, str(min_status[0])
+    return azs_info, '-1'
 
 
 def new(client, azs_status, petrol):
     """
-    The function adds the client to the queue of the required petrol pump and completes client information with a departure time
+    The function adds the client to the queue of the required petrol pump and completes client information with
+    a departure time
     :param client: list with information about the client
     :param azs_status: dictionary with a petrol station status
     :param petrol: number of the required petrol pump
@@ -105,7 +110,8 @@ def new(client, azs_status, petrol):
 def modelling(client, azs_info, azs_status, statistic, time):
     """
     The recursive function simulates minute-to-minute working cycle of the petrol station (1440 cycles)
-    :param client: list with following client, if any client participated in the previous cycle, the parameter is equal to None
+    :param client: list with following client, if any client participated in the previous cycle, the parameter is equal
+     to None
     :param azs_info: dictionary with a petrol station information
     :param azs_status: dictionary with a petrol station status
     :param statistic: dictionary with the petrol station working statitistic
@@ -123,15 +129,15 @@ def modelling(client, azs_info, azs_status, statistic, time):
             client.append(int(client[1]) // speed)
         else:
             client.append((int(client[1]) // speed) + 1)
-    for n in range(1,len(azs_status)+1):
-        if azs_status[str(n)] != []:
+    for n in range(1, len(azs_status) + 1):
+        if azs_status[str(n)]:
             departure_time = str(azs_status[str(n)][0][4])
             if int(departure_time) <= int(time):
                 azs_info[str(n)][2] -= 1
                 monitoring(azs_info, azs_status[str(n)][0], 'departure')
                 azs_status[str(n)].pop(0)
     if str(time) == converter(client[0]):
-        azs_info, petrol = check_place(azs_info,client)
+        azs_info, petrol = check_place(azs_info, client)
     if not petrol:
         return modelling(client, azs_info, azs_status, statistic, time + 1)
     elif petrol == '-1':
