@@ -94,10 +94,10 @@ def new(client, azs_status, petrol):
     :param petrol: number of the required petrol pump
     :return: azs_status
     """
-    if azs_status[petrol]:
-        client.append(int(azs_status[petrol][-1][-1]) + client[3])
-    else:
+    if not azs_status[str(petrol)]:
         client.append(int(converter(client[0])) + client[3])
+    else:
+        client.append(azs_status[str(petrol)][-1][4] + client[3])
     azs_status[str(petrol)].append(client)
     return azs_status
 
@@ -124,9 +124,9 @@ def modelling(client, azs_info, azs_status, statistic, time):
         else:
             client.append((int(client[1]) // speed) + 1)
     for n in range(1,len(azs_status)+1):
-        if azs_status[str(n)]:
-            departure_time = azs_status[str(n)][0][4]
-            if departure_time <= time:
+        if azs_status[str(n)] != []:
+            departure_time = str(azs_status[str(n)][0][4])
+            if int(departure_time) <= int(time):
                 azs_info[str(n)][2] -= 1
                 monitoring(azs_info, azs_status[str(n)][0], 'departure')
                 azs_status[str(n)].pop(0)
@@ -137,13 +137,15 @@ def modelling(client, azs_info, azs_status, statistic, time):
     elif petrol == '-1':
         statistic['покинувшие'] += 1
         monitoring(azs_info, client, 'waste')
-        return modelling(None, azs_info, azs_status, statistic, time + 1)
+        client = None
+        return modelling(client, azs_info, azs_status, statistic, time + 1)
     else:
         statistic['литры'] += int(client[1])
         statistic['доход'] += int(client[1]) * prices[client[2]]
         monitoring(azs_info, client, petrol)
         azs_status = new(client, azs_status, petrol)
-        return modelling(None, azs_info, azs_status, statistic, time + 1)
+        client = None
+        return modelling(client, azs_info, azs_status, statistic, time + 1)
 
 
 if __name__ == '__main__':
