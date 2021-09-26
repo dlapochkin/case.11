@@ -2,7 +2,7 @@
 Case-study 11
 Developers:
 Кривошапова Д. Е.: 30%
-Кузнецов А. Д.: 27%
+Кузнецов А. Д.: 33%
 Лапочкин Д. А.: 35%
 """
 
@@ -18,7 +18,7 @@ def main():
     sys.stdin = open("azs.txt")
     azs_info = dict()
     azs_status = dict()
-    statistic = {'литры': 0, 'доход': 0, 'покинувшие': 0}
+    statistic = {'АИ-80': 0, 'АИ-92': 0, 'АИ-95': 0, 'АИ-98': 0, 'доход': 0, 'покинувшие': 0}
     while True:
         try:
             line = list(input().split())
@@ -30,7 +30,8 @@ def main():
             break
     sys.stdin = open('input.txt')
     statistic = modelling(None, azs_info, azs_status, statistic, 1)
-    print('\nЗа сутки было продано', statistic['литры'], 'литров бензина.\nВыручка составила',
+    print('\nЗа сутки было продано', statistic['АИ-80'], 'литров бензина АИ-80,',statistic['АИ-92'], 'литров бензина АИ-92,'
+          ,statistic['АИ-95'], 'литров бензина АИ-95,', statistic['АИ-98'], 'литров бензина АИ-98.\nВыручка составила',
           '{:.2f}'.format(statistic['доход']), 'рублей.\n''Из-за скопившейся очереди АЗС покинули',
           statistic['покинувшие'], 'клиентов.')
 
@@ -144,7 +145,14 @@ def modelling(client, azs_info, azs_status, statistic, time):
         monitoring(azs_info, client, 'waste')
         return modelling(None, azs_info, azs_status, statistic, time + 1)
     else:
-        statistic['литры'] += int(client[1])
+        if client[2] == 'АИ-80':
+            statistic['АИ-80'] += int(client[1])
+        if client[2] == 'АИ-92':
+            statistic['АИ-92'] += int(client[1])
+        if client[2] == 'АИ-95':
+            statistic['АИ-95'] += int(client[1])
+        if client[2] == 'АИ-98':
+            statistic['АИ-98'] += int(client[1])
         statistic['доход'] += int(client[1]) * prices[client[2]]
         monitoring(azs_info, client, petrol)
         azs_status = new(client, azs_status, petrol)
